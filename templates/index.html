@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebinin VIP Paneli</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .vip-button {
+            background: linear-gradient(45deg, #f6d365 0%, #fda085 100%);
+            box-shadow: 0 4px 15px rgba(246, 211, 101, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .vip-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(246, 211, 101, 0.6);
+        }
+        
+        .sidebar {
+            transform: translateX(-100%);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 50px -15px rgba(180, 24, 219, 0.3);
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .query-item {
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .query-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .vip-badge {
+            background: linear-gradient(45deg, #ff8a00, #e52e71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        .free-badge {
+            color: #4ade80;
+            font-weight: 700;
+        }
+        
+        .bg-gif {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.2;
+        }
+    </style>
+</head>
+<body>
+    <!-- Arka plan GIF -->
+    <div class="bg-gif">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/bae11c4f-13be-4999-9d44-18deb5095a1f.png" alt="Lüks VIP arka plan animasyonu, altın ve siyah renklerde parıltılı efektler" />
+    </div>
+
+    <!-- Üst navigasyon -->
+    <div class="fixed top-0 left-0 right-0 z-40">
+        <div class="flex justify-between items-center p-3">
+            <!-- Sol butonlar -->
+            <div class="flex space-x-2">
+                <button onclick="window.location.href='/abonelik'" class="p-2 rounded-full bg-blue-500 hover:bg-blue-600 transition-all duration-300 flex items-center justify-center">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f502f1f1-330a-414a-b575-811014c0031b.png" alt="Alışveriş" width="16" height="16" />
+                </button>
+                <button onclick="window.location.href='/hakkimizda'" class="p-2 rounded-full bg-gray-600 hover:bg-gray-700 transition-all duration-300 flex items-center justify-center">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/520f3373-b489-41f7-aa4c-f1a84ae138c5.png" alt="Bilgi" width="16" height="16" />
+                </button>
+                <button onclick="window.location.href='/ayarlar'" class="p-2 rounded-full bg-purple-500 hover:bg-purple-600 transition-all duration-300 flex items-center justify-center">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/4e44bb12-6514-4319-a221-a52a0c0786f9.png" alt="Ayarlar" width="16" height="16" />
+                </button>
+                <button onclick="window.location.href='/bildirimler'" class="p-2 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-all duration-300 flex items-center justify-center">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/3bcd9142-19a0-43fb-8f8f-1107ce10439a.png" alt="Bildirimler" width="16" height="16" />
+                </button>
+            </div>
+            
+            <!-- Menü butonu -->
+            <button id="menuButton" class="p-2 mr-2 rounded-full bg-gradient-to-r from-pink-500 to-red-500 transition-all duration-300 flex items-center justify-center" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Ana içerik -->
+    <div class="flex items-center justify-center h-screen">
+        <div class="mt-16"> <!-- Added margin top -->
+        <div class="glass-effect p-12 text-center max-w-2xl">
+            <h1 class="text-5xl font-bold mb-6">Nebinin Paneline Hoş Geldiniz</h1>
+            <p class="text-xl opacity-80">VIP Sorgu Sistemine Erişmek İçin Menüyü Açın</p>
+        </div>
+    </div>
+
+    <!-- Yan menü -->
+    <div id="sidebar" class="sidebar fixed top-0 left-0 w-80 h-full bg-gradient-to-br from-purple-900 via-black to-gray-900 shadow-xl z-50 overflow-y-auto border-r-4 border-purple-500 border-opacity-50 transform -translate-x-full transition-transform">
+        <div class="p-8">
+            <!-- Profile Section -->
+            <div class="flex items-center gap-4 mb-8 p-4 bg-gray-800 rounded-lg">
+                <img src="...profile_image_url..." alt="Kullanıcı Profili" class="w-12 h-12 rounded-full">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-medium">Çevrimiçi</span>
+                        <span class="h-2 w-2 rounded-full bg-green-500"></span>
+                    </div>
+                    <span class="text-sm vip-badge">VIP</span>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">VIP Menü <span class="text-yellow-400">⭐</span></h2>
+                <button id="closeMenu" class="text-2xl" onclick="toggleMenu()">&times;</button>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Mernis2025 Sorguları -->
+                <div class="query-option">
+                    <button class="query-title flex items-center justify-between w-full p-4 bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl border border-gray-700 hover:border-purple-500 transition-all duration-300" onclick="toggleSubmenu('mernis-submenu')">
+                        <span class="text-xl">🧾 MERNİS2025</span>
+                        <span class="text-sm free-badge">FREE</span>
+                    </button>
+                    <div id="mernis-submenu" class="query-content mt-2 pl-4 hidden">
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=Ad Soyad → TC'">
+                            <span>Ad Soyad → TC</span>
+                            <span class="free-badge">FREE</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=TC → Ad Soyad'">
+                            <span>TC → Ad Soyad</span>
+                            <span class="free-badge">FREE</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=GSM → Ad Soyad'">
+                            <span>GSM → Ad Soyad</span>
+                            <span class="free-badge">FREE</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=Telegram Sorgu'">
+                            <span>Telegram Sorgu</span>
+                            <span class="free-badge">FREE</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Diğer Sorgular -->
+                <div class="query-option">
+                    <button class="query-title flex items-center justify-between w-full p-4 bg-gray-800 rounded-lg" onclick="toggleSubmenu('other-operations-submenu')">
+                        <span class="text-xl">🔍 Diğer İşlemler</span>
+                        <span class="text-sm vip-badge">VIP</span>
+                    </button>
+                    <div id="other-operations-submenu" class="query-content mt-2 pl-4 hidden">
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=TC Pro'">
+                            <span>TC Pro Sorgu</span>
+                            <span class="vip-badge">VIP</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=Tapu Sorgu'">
+                            <span>Tapu Sorgu</span>
+                            <span class="vip-badge">VIP</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=Adres Sorgu'">
+                            <span>Adres Sorgu</span>
+                            <span class="vip-badge">VIP</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=Okul No Sorgu'">
+                            <span>Okul No Sorgu</span>
+                            <span class="vip-badge">VIP</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=Aile Sorgu'">
+                            <span>Aile Sorgu</span>
+                            <span class="vip-badge">VIP</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Efsane Sorgular -->
+                <div class="query-option">
+                    <button class="query-title flex items-center justify-between w-full p-4 bg-gray-800 rounded-lg" onclick="toggleSubmenu('legendary-operations-submenu')">
+                        <span class="text-xl">✨ Efsane Sorgular</span>
+                        <span class="text-sm vip-badge">VIP</span>
+                    </button>
+                    <div id="legendary-operations-submenu" class="query-content mt-2 pl-4 hidden">
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=Sülale Sorgu'">
+                            <span>Sülale Sorgu</span>
+                            <span class="vip-badge">VIP</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=SGK Yetkili Sorgu'">
+                            <span>SGK Yetkili Sorgu</span>
+                            <span class="vip-badge">VIP</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=İş Yeri Sorgu'">
+                            <span>İş Yeri Sorgu</span>
+                            <span class="vip-badge">VIP</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=Hane Sorgu'">
+                            <span>Hane Sorgu</span>
+                            <span class="vip-badge">VIP</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=Baba Sorgu'">
+                            <span>Baba Sorgu</span>
+                            <span class="vip-badge">VIP</span>
+                        </button>
+                        <button class="query-item p-3 rounded-lg mb-2 flex justify-between" onclick="window.location.href='/sorgu?s=Anne Sorgu'">
+                            <span>Anne Sorgu</span>
+                            <span class="vip-badge">VIP</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+        
+        function toggleSubmenu(id) {
+            const submenu = document.getElementById(id);
+            submenu.classList.toggle('hidden');
+        }
+
+        // F12 ve diğer geliştirici araçlarını engelleme
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "F12" || (event.ctrlKey && event.shiftKey && event.key === "I") || (event.ctrlKey && event.key === "U")) {
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
