@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>NeoNabi VIP Giriş</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            background: radial-gradient(circle, #111 0%, #000 100%);
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px #00ffff, 0 0 30px #00ffcc;
+        }
+
+        form {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px #0ff;
+            width: 320px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            background: #00ffff;
+            color: #000;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #00cccc;
+        }
+
+        a {
+            color: #00ffff;
+            text-decoration: underline;
+            font-size: 0.9rem;
+        }
+
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .captcha-img {
+            height: 45px;
+            border-radius: 8px;
+        }
+
+        #free-login {
+            margin-top: 10px;
+            padding: 8px;
+            background: #ff0;
+            color: #000;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        // F12 ve diğer kısayolları engelle
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
+                e.preventDefault();
+            }
+        });
+
+        // Ücretsiz giriş fonksiyonu
+        function loginAsFreeUser() {
+            document.getElementsByName("username")[0].value = "freeuser";
+            document.getElementsByName("password")[0].value = "1234";
+            document.forms[0].submit();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>NeoNabi Paneli - Giriş</h1>
+        <form method="POST" action="/login">
+            <input type="text" name="username" placeholder="Kullanıcı Adı" required>
+            <input type="password" name="password" placeholder="Şifre" required>
+
+            <div class="captcha-container">
+                <img src="/captcha" alt="captcha" class="captcha-img">
+                <input type="text" name="captcha" placeholder="Kodu girin" required>
+            </div>
+
+            <button type="submit">VIP Giriş</button>
+        </form>
+
+        <button id="free-login" onclick="loginAsFreeUser()">Ücretsiz Giriş Yap</button>
+
+        <p>Hesabın yok mu? <a href="/register">Kayıt Ol</a></p>
+        <p style="margin-top:10px;font-size:0.85rem;color:#ccc">Bazı işlemler sadece VIP kullanıcılar içindir.<br> VIP almak için <strong>@Kuruvasanyedim</strong> hesabına ulaş.</p>
+    </div>
+</body>
+</html>
