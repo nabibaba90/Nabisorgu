@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sorgu - {{ sorgu_tipi }}</title>
+  <style>
+    /* Genel body ve font */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #e0f7fa;
+      font-family: 'Poppins', sans-serif;
+      padding: 30px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 2.8rem;
+      color: #00fff7;
+      text-shadow:
+        0 0 5px #00fff7,
+        0 0 20px #00d1d1,
+        0 0 30px #00c6c6;
+      margin-bottom: 25px;
+    }
+
+    /* Form stili */
+    form {
+      background: rgba(0, 22, 30, 0.85);
+      padding: 25px 30px;
+      border-radius: 20px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow:
+        0 0 10px #00fff7aa,
+        inset 0 0 30px #00b6b6cc;
+      margin-bottom: 30px;
+      transition: box-shadow 0.3s ease;
+    }
+
+    form:hover {
+      box-shadow:
+        0 0 30px #00fff7ff,
+        inset 0 0 50px #00e8e8ff;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #00f0ff;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      user-select: none;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: none;
+      margin-bottom: 18px;
+      font-size: 18px;
+      background: #002e3a;
+      color: #b7f8ff;
+      box-shadow: inset 0 0 8px #00b7c4;
+      transition: background-color 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      background: #00495b;
+      outline: none;
+      box-shadow: 0 0 15px #00e0ff, inset 0 0 12px #00e0ff;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      background: linear-gradient(45deg, #00fff7, #009999);
+      border: none;
+      padding: 16px 0;
+      border-radius: 40px;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
+      font-size: 20px;
+      box-shadow: 0 0 25px #00fff7cc;
+      letter-spacing: 0.08em;
+      user-select: none;
+      transition: filter 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      filter: brightness(1.3);
+      box-shadow: 0 0 40px #00ffffee;
+    }
+
+    /* Flash mesajları */
+    .error {
+      color: #ff5555;
+      font-weight: 700;
+      background: #330000bb;
+      padding: 10px 15px;
+      border-radius: 10px;
+      max-width: 480px;
+      margin-bottom: 18px;
+      box-shadow: 0 0 15px #ff4d4daa;
+    }
+
+    /* Sonuçlar kapsayıcı */
+    .results-container {
+      max-width: 900px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      padding-bottom: 40px;
+    }
+
+    /* Her bir kişi kartı */
+    .result-card {
+      background: #004550dd;
+      border-radius: 20px;
+      padding: 20px 25px;
+      box-shadow:
+        0 0 15px #00fff7aa,
+        inset 0 0 40px #007a7aff;
+      color: #c3ffff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+      user-select: text;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-card:hover {
+      transform: translateY(-6px);
+      box-shadow:
+        0 0 40px #00ffffcc,
+        inset 0 0 55px #00ffffcc;
+      z-index: 2;
+    }
+
+    .result-card h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #00ffff;
+      text-shadow:
+        0 0 6px #00ffffaa,
+        0 0 12px #00a0a0cc;
+    }
+
+    .result-card div {
+      margin-bottom: 7px;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      line-height: 1.25;
+    }
+
+    /* İkonlar için emoji küçük ayar */
+    .result-card div::before {
+      margin-right: 8px;
+      font-weight: 700;
+    }
+
+    /* Responsive */
+    @media (max-width: 520px) {
+      body {
+        padding: 20px 12px;
+      }
+
+      form {
+        padding: 20px;
+      }
+
+      button {
+        font-size: 18px;
+        padding: 14px 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Sorgu: {{ sorgu_tipi }}</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div>
+    {% for category, message in messages %}
+    <div class="{{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <form method="POST" autocomplete="off">
+    <input type="hidden" name="sorgu_tipi" value="{{ sorgu_tipi }}" />
+
+    {% if sorgu_tipi == "Ad Soyad → TC" or sorgu_tipi == "Ad Soyad → GSM" %}
+    <label for="adSoyad">Ad Soyad:</label>
+    <input type="text" id="adSoyad" name="adSoyad" required placeholder="Örn: Mehmet Yılmaz" />
+    {% elif sorgu_tipi in ["TC → Ad Soyad", "TC Pro", "SGK Yetkili Sorgu"] %}
+    <label for="tcNo">TC Kimlik No:</label>
+    <input type="text" id="tcNo" name="tcNo" required placeholder="11 haneli TC Kimlik No" />
+    {% elif sorgu_tipi == "GSM → Ad Soyad" or sorgu_tipi == "GSM Detay" %}
+    <label for="gsmNo">GSM Numarası:</label>
+    <input type="text" id="gsmNo" name="gsmNo" required placeholder="5xx xxx xx xx" />
+    {% elif sorgu_tipi == "Tapu Sorgu" %}
+    <label for="parselNo">Parsel No:</label>
+    <input type="text" id="parselNo" name="parselNo" required />
+    {% elif sorgu_tipi == "Adres Sorgu" or sorgu_tipi == "Hane Sorgu" %}
+    <label for="adres">Adres:</label>
+    <input type="text" id="adres" name="adres" required />
+    {% elif sorgu_tipi == "Okul No Sorgu" %}
+    <label for="okulNo">Okul No:</label>
+    <input type="text" id="okulNo" name="okulNo" required />
+    {% elif sorgu_tipi == "Aile Sorgu" %}
+    <label for="aileNo">Aile No:</label>
+    <input type="text" id="aileNo" name="aileNo" required />
+    {% elif sorgu_tipi == "Sülale Sorgu" %}
+    <label for="sulaleAdi">Sülale Adı:</label>
+    <input type="text" id="sulaleAdi" name="sulaleAdi" required />
+    {% elif sorgu_tipi == "İş Yeri Sorgu" %}
+    <label for="isYeriAdi">İş Yeri Adı:</label>
+    <input type="text" id="isYeriAdi" name="isYeriAdi" required />
+    {% elif sorgu_tipi == "Baba Sorgu" %}
+    <label for="babaAdi">Baba Adı:</label>
+    <input type="text" id="babaAdi" name="babaAdi" required />
+    {% elif sorgu_tipi == "Anne Sorgu" %}
+    <label for="anneAdi">Anne Adı:</label>
+    <input type="text" id="anneAdi" name="anneAdi" required />
+    {% else %}
+    <p>Bu sorgu türü için giriş alanı yok.</p>
+    {% endif %}
+
+    <button type="submit">Sorgula</button>
+  </form>
+
+  {% if sonuc %}
+  <pre class="result-card" style="white-space: pre-wrap; max-width: 900px; margin-bottom: 40px; user-select:text;">{{ sonuc }}</pre>
+  {% endif %}
+
+  {% if json_sonuc %}
+  <div class="results-container">
+    {% for kisi in json_sonuc %}
+    <div class="result-card" title="Detayları seçip kopyalayabilirsiniz">
+      <h3>{{ kisi.AD }} {{ kisi.SOYAD }}</h3>
+      <div>📞 GSM: {{ kisi.GSM or "-" }}</div>
+      <div>🆔 TC: {{ kisi.TC or "-" }}</div>
+      <div>👨 Baba: {{ kisi.BABAADI or "-" }} - {{ kisi.BABATC or "-" }}</div>
+      <div>👩 Anne: {{ kisi.ANNEADI or "-" }} - {{ kisi.ANNETC or "-" }}</div>
+      <div>🎂 Doğum: {{ kisi.DOGUMTARIHI or "-" }} / {{ kisi.DOGUMYERI or "-" }}</div>
+      <div>📍 Memleket: {{ kisi.MEMLEKETIL or "-" }} / {{ kisi.MEMLEKETILCE or "-" }} / {{ kisi.MEMLEKETKOY or "-" }}</div>
+      <div>🏡 Adres: {{ kisi.ADRESIL or "-" }} / {{ kisi.ADRESILCE or "-" }}</div>
+      <div>📜 Aile No: {{ kisi.AILESIRANO or "-" }} / Birey No: {{ kisi.BIREYSIRANO or "-" }}</div>
+      <div>❤️ Medeni Hal: {{ kisi.MEDENIHAL or "-" }} / Cinsiyet: {{ kisi.CINSIYET or "-" }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</body>
+
+</html>
