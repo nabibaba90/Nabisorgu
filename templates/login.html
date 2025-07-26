@@ -1,195 +1,127 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8" />
-    <title>NeoNabi VIP Giriş</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Orbitron', sans-serif;
-            background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
-            color: #e0f7fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        .container {
-            background: rgba(0,0,0,0.85);
-            padding: 30px 40px;
-            border-radius: 20px;
-            box-shadow: 0 0 40px #00e5ff;
-            width: 350px;
-            text-align: center;
-        }
-        h1 {
-            font-size: 2.4rem;
-            margin-bottom: 25px;
-            color: #00e5ff;
-            text-shadow: 0 0 10px #00b8d4;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-        input[type="text"],
-        input[type="password"] {
-            padding: 12px 15px;
-            border-radius: 12px;
-            border: none;
-            font-size: 1.1rem;
-            outline: none;
-            transition: box-shadow 0.3s;
-        }
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            box-shadow: 0 0 10px #00e5ff;
-        }
-        .captcha-display {
-            background: #004d40;
-            color: #00e5ff;
-            font-weight: 900;
-            font-size: 1.6rem;
-            letter-spacing: 8px;
-            padding: 12px 20px;
-            border-radius: 12px;
-            user-select: none;
-            cursor: pointer;
-            margin-bottom: 10px;
-            box-shadow: 0 0 20px #00e5ff;
-        }
-        .captcha-refresh-text {
-            font-size: 0.85rem;
-            color: #80deea;
-            margin-bottom: 12px;
-            cursor: pointer;
-            user-select: none;
-            transition: color 0.3s;
-        }
-        .captcha-refresh-text:hover {
-            color: #00bcd4;
-        }
-        button {
-            background: #00e5ff;
-            border: none;
-            border-radius: 14px;
-            padding: 14px 0;
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: #00343d;
-            cursor: pointer;
-            box-shadow: 0 0 25px #00e5ff;
-            transition: background 0.3s, box-shadow 0.3s;
-        }
-        button:hover {
-            background: #00bcd4;
-            box-shadow: 0 0 35px #00bcd4;
-        }
-        #free-login {
-            margin-top: 15px;
-            background: #ffd600;
-            color: #000;
-            font-weight: 700;
-            box-shadow: 0 0 20px #ffd600;
-        }
-        #free-login:hover {
-            background: #ffc400;
-            box-shadow: 0 0 30px #ffc400;
-        }
-        p, a {
-            color: #80deea;
-            font-size: 0.9rem;
-        }
-        a:hover {
-            color: #00bcd4;
-            text-decoration: underline;
-        }
-        .info-text {
-            margin-top: 14px;
-            font-size: 0.85rem;
-            color: #4dd0e1;
-        }
-        @media(max-width: 420px){
-            .container {
-                width: 90vw;
-                padding: 20px;
-            }
-            h1 {
-                font-size: 1.8rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NeoNabi VIP Giriş</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(120deg, #0f0f0f, #1c1c1c);
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      color: #00ffcc;
+    }
+
+    .glow {
+      font-size: 2em;
+      text-align: center;
+      color: #0ff;
+      text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #00f, 0 0 30px #0ff;
+      margin-bottom: 30px;
+    }
+
+    .login-box {
+      background: rgba(20, 20, 20, 0.9);
+      padding: 40px;
+      border-radius: 15px;
+      border: 2px solid #00ffcc;
+      box-shadow: 0 0 25px #00ffcc;
+      width: 320px;
+      text-align: center;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      background: #111;
+      border: 1px solid #00ffcc;
+      border-radius: 8px;
+      color: #0ff;
+      font-size: 1em;
+    }
+
+    .login-box input:focus {
+      outline: none;
+      box-shadow: 0 0 10px #00ffcc;
+    }
+
+    .login-box button {
+      background: #00ffcc;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .login-box button:hover {
+      background: #0ff;
+      box-shadow: 0 0 15px #00ffcc;
+    }
+
+    .light-bars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .light-bars::before,
+    .light-bars::after {
+      content: "";
+      position: absolute;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent, #00ffcc, transparent);
+      animation: scroll 2s linear infinite;
+    }
+
+    .light-bars::after {
+      left: 80%;
+      animation-delay: 1s;
+    }
+
+    @keyframes scroll {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    .warning {
+      font-size: 12px;
+      margin-top: 10px;
+      color: #aaa;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>NeoNabi Paneli - VIP Giriş</h1>
-        <form id="loginForm" method="POST" action="/login" onsubmit="return validateCaptcha()">
-            <input type="text" name="username" placeholder="Kullanıcı Adı" required autocomplete="off" />
-            <input type="password" name="password" placeholder="Şifre" required autocomplete="off" />
+  <div class="light-bars"></div>
 
-            <div class="captcha-display" id="captchaCode" title="Captcha koduna tıklayarak yenileyebilirsin" onclick="generateCaptcha()"></div>
-            <div class="captcha-refresh-text" onclick="generateCaptcha()">Kod yenilemek için tıkla ↻</div>
-
-            <input type="text" id="captchaInput" name="captcha_input" placeholder="6 haneli kodu girin" maxlength="6" required autocomplete="off" />
-
-            <button type="submit">VIP Giriş</button>
-        </form>
-
-        <button id="free-login">Ücretsiz Giriş Yap</button>
-
-        <p>Hesabın yok mu? <a href="/register">Kayıt Ol</a></p>
-        <p class="info-text">
-            Bazı işlemler sadece VIP kullanıcılar içindir.<br />
-            VIP almak için <strong>@Kuruvasanyedim</strong> hesabına ulaş.
-        </p>
-    </div>
-
-    <script>
-        let currentCaptcha = '';
-
-        // Rastgele 6 haneli kod üret
-        function generateCaptcha() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let code = '';
-            for (let i = 0; i < 6; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            currentCaptcha = code;
-            document.getElementById('captchaCode').textContent = code;
-            document.getElementById('captchaInput').value = '';
-        }
-
-        // Form gönderiminde captcha kontrolü
-        function validateCaptcha() {
-            const userInput = document.getElementById('captchaInput').value.trim().toUpperCase();
-            if (userInput !== currentCaptcha) {
-                alert('Captcha kodu yanlış! Lütfen doğru kodu girin.');
-                generateCaptcha();
-                return false; // Formun gönderilmesini engelle
-            }
-            return true;
-        }
-
-        // Ücretsiz giriş butonu fonksiyonu
-        document.getElementById('free-login').addEventListener('click', function(e){
-            e.preventDefault();
-            // Ücretsiz kullanıcının erişebileceği işlemler için yönlendirme
-            // Burada direkt abonelik.html sayfasına gitmesini sağlıyoruz
-            window.location.href = 'abonelik.html';
-        });
-
-        // Sayfa yüklendiğinde captcha oluştur
-        window.onload = generateCaptcha;
-
-        // F12 ve Ctrl+Shift+I engelle (kötü niyetli engellemeyle değilse kaldır)
-        document.addEventListener("keydown", function (e) {
-            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C"))) {
-                e.preventDefault();
-            }
-        });
-    </script>
+  <form class="login-box" method="POST" action="/login">
+    <div class="glow">NEONABI VIP PANEL</div>
+    <input type="text" name="username" placeholder="Kullanıcı Adı" required />
+    <input type="password" name="password" placeholder="Şifre" required />
+    <div class="captcha">{{ captcha_code }}</div>
+    <input type="text" name="captcha" placeholder="Güvenlik Kodunu Gir" required />
+    <button type="submit">Giriş Yap</button>
+    <div class="warning">Yetkisiz girişler kayıt altına alınır.</div>
+  </form>
 </body>
 </html>
