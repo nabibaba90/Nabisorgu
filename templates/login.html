@@ -7,121 +7,107 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
   <style>
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     body {
+      background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
       height: 100vh;
-      background: linear-gradient(120deg, #0f0f0f, #1c1c1c);
       font-family: 'Orbitron', sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #fff;
       overflow: hidden;
-      position: relative;
-      color: #00ffcc;
     }
 
-    .glow {
-      font-size: 2em;
-      text-align: center;
-      color: #0ff;
-      text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #00f, 0 0 30px #0ff;
-      margin-bottom: 30px;
-    }
-
-    .login-box {
-      background: rgba(20, 20, 20, 0.9);
-      padding: 40px;
+    .login-container {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 40px 25px;
       border-radius: 15px;
-      border: 2px solid #00ffcc;
-      box-shadow: 0 0 25px #00ffcc;
-      width: 320px;
+      box-shadow: 0 0 20px #00ffe7, 0 0 50px #00ffe7;
+      width: 90%;
+      max-width: 380px;
       text-align: center;
+      position: relative;
+      z-index: 2;
     }
 
-    .login-box input {
+    .login-container h2 {
+      margin-bottom: 25px;
+      font-size: 28px;
+      color: #00ffe7;
+      text-shadow: 0 0 10px #00ffe7;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ffffff12;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .login-container input::placeholder {
+      color: #aaa;
+    }
+
+    .login-container button {
       width: 100%;
       padding: 12px;
-      margin: 12px 0;
-      background: #111;
-      border: 1px solid #00ffcc;
+      border: none;
       border-radius: 8px;
-      color: #0ff;
-      font-size: 1em;
-    }
-
-    .login-box input:focus {
-      outline: none;
-      box-shadow: 0 0 10px #00ffcc;
-    }
-
-    .login-box button {
-      background: #00ffcc;
+      background-color: #00ffe7;
       color: #000;
       font-weight: bold;
-      border: none;
-      padding: 12px;
-      width: 100%;
-      border-radius: 8px;
-      font-size: 1em;
+      font-size: 16px;
       cursor: pointer;
-      transition: 0.3s ease;
+      transition: 0.3s;
     }
 
-    .login-box button:hover {
-      background: #0ff;
-      box-shadow: 0 0 15px #00ffcc;
+    .login-container button:hover {
+      background-color: #0ff;
+      box-shadow: 0 0 10px #0ff;
     }
 
-    .light-bars {
+    .anime-bg {
       position: absolute;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;
       z-index: 0;
+      background: url('https://i.pinimg.com/originals/43/1a/dc/431adc1fc2f61b3e0b19e9d2c1d64942.gif') center center / cover no-repeat;
+      opacity: 0.07;
+      animation: flicker 10s infinite alternate;
     }
 
-    .light-bars::before,
-    .light-bars::after {
-      content: "";
-      position: absolute;
-      width: 2px;
-      height: 100%;
-      background: linear-gradient(to bottom, transparent, #00ffcc, transparent);
-      animation: scroll 2s linear infinite;
+    @keyframes flicker {
+      0% { opacity: 0.04; }
+      100% { opacity: 0.09; }
     }
 
-    .light-bars::after {
-      left: 80%;
-      animation-delay: 1s;
-    }
-
-    @keyframes scroll {
-      0% { top: -100%; }
-      100% { top: 100%; }
-    }
-
-    .warning {
-      font-size: 12px;
-      margin-top: 10px;
-      color: #aaa;
+    @media(max-width: 500px) {
+      .login-container {
+        padding: 30px 15px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="light-bars"></div>
-
-  <form class="login-box" method="POST" action="/login">
-    <div class="glow">NEONABI VIP PANEL</div>
-    <input type="text" name="username" placeholder="Kullanıcı Adı" required />
-    <input type="password" name="password" placeholder="Şifre" required />
-    <div class="captcha">{{ captcha_code }}</div>
-    <input type="text" name="captcha" placeholder="Güvenlik Kodunu Gir" required />
-    <button type="submit">Giriş Yap</button>
-    <div class="warning">Yetkisiz girişler kayıt altına alınır.</div>
-  </form>
+  <div class="anime-bg"></div>
+  <div class="login-container">
+    <h2>NeoNabi VIP Panel</h2>
+    <form method="POST" action="/login">
+      <input type="text" name="username" placeholder="Kullanıcı Adı" required />
+      <input type="password" name="password" placeholder="Şifre" required />
+      <button type="submit">Giriş Yap</button>
+    </form>
+  </div>
 </body>
 </html>
