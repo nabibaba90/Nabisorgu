@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = "neonabi_super_secret_key"
 app.permanent_session_lifetime = timedelta(hours=2)
 
-# Kullanıcılar: VIP ve Ücretsiz olarak ayırıyoruz
+# Kullanıcılar
 USERS = {
     "admin": {"password": "123456", "vip": True},
     "freeuser": {"password": "1234", "vip": False}
@@ -20,44 +20,41 @@ def generate_captcha(length=6):
 
 def login_required(f):
     @wraps(f)
-    def decorated_function(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         if "username" not in session:
             flash("Lütfen giriş yapınız!", "error")
             return redirect(url_for("login"))
         return f(*args, **kwargs)
-    return decorated_function
+    return wrapper
 
 def vip_required(f):
     @wraps(f)
-    def decorated_function(*args, **kwargs):
-        username = session.get("username")
-        if not username or not USERS.get(username, {}).get("vip", False):
-            flash("Bu sayfaya erişim için VIP üyelik gereklidir.", "error")
+    def wrapper(*args, **kwargs):
+        user = session.get("username")
+        if not user or not USERS.get(user, {}).get("vip", False):
+            flash("VIP erişim gerekiyor.", "error")
             return redirect(url_for("abonelik"))
         return f(*args, **kwargs)
-    return decorated_function
+    return wrapper
 
-@app.route('/')
+@app.route("/")
 @login_required
 def index():
-    # Ana VIP sayfa
     return render_template("index.html")
 
-@app.route('/abonelik')
+@app.route("/abonelik")
 @login_required
 def abonelik():
-    # Ücretsiz kullanıcılar buraya yönlendirilir
     return render_template("abonelik.html")
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "").strip()
-        captcha_input = request.form.get("captcha_input", "").strip().upper()
+        captcha_input = request.form.get("captcha", "").strip().upper()
 
-        # Backend captcha doğrulama
-        if "captcha_code" not in session or captcha_input != session["captcha_code"]:
+        if captcha_input != session.get("captcha_code"):
             flash("Captcha kodu yanlış!", "error")
             session["captcha_code"] = generate_captcha()
             return render_template("login.html", captcha=session["captcha_code"])
@@ -67,18 +64,14 @@ def login():
             session["username"] = username
             session.permanent = True
             flash("Giriş başarılı!", "success")
-            if user["vip"]:
-                return redirect(url_for("index"))
-            else:
-                return redirect(url_for("abonelik"))
+            return redirect(url_for("index") if user["vip"] else url_for("abonelik"))
         else:
-            flash("Kullanıcı adı veya şifre yanlış!", "error")
+            flash("Kullanıcı adı veya şifre hatalı!", "error")
 
-    # GET isteği için captcha üret
     session["captcha_code"] = generate_captcha()
     return render_template("login.html", captcha=session["captcha_code"])
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
@@ -88,23 +81,24 @@ def register():
         if not username or not password1 or not password2:
             flash("Tüm alanları doldurun!", "error")
         elif password1 != password2:
-            flash("Şifreler uyuşmuyor!", "error")
+            flash("Şifreler eşleşmiyor!", "error")
         elif username in USERS:
-            flash("Bu kullanıcı zaten kayıtlı!", "error")
+            flash("Bu kullanıcı zaten mevcut!", "error")
         else:
-            USERS[username] = {"password": password1, "vip": False}  # Yeni kayıt ücretsiz
+            USERS[username] = {"password": password1, "vip": False}
             flash("Kayıt başarılı! Giriş yapabilirsiniz.", "success")
             return redirect(url_for("login"))
+
     return render_template("register.html")
 
-@app.route('/logout')
+@app.route("/logout")
 @login_required
 def logout():
     session.pop("username", None)
-    flash("Başarıyla çıkış yapıldı.", "success")
+    flash("Çıkış yapıldı.", "success")
     return redirect(url_for("login"))
 
-@app.route('/sorgu', methods=['GET', 'POST'])
+@app.route("/sorgu", methods=["GET", "POST"])
 @login_required
 @vip_required
 def sorgu():
@@ -112,23 +106,21 @@ def sorgu():
     sonuc = None
 
     if request.method == "POST":
-        user_input = request.form.get("captcha_input", "").strip().upper()
-        if user_input != session.get("captcha_code", ""):
+        captcha_input = request.form.get("captcha", "").strip().upper()
+        if captcha_input != session.get("captcha_code"):
             flash("Güvenlik kodu yanlış!", "error")
             return redirect(request.url)
 
         try:
-            sorgu_tipi = request.form.get("sorgu_tipi")
-            url = ""
             form = request.form
+            url = ""
 
-            # Buraya tüm API sorgularını ekledim, senin verdiğin tüm sorgular:
             if sorgu_tipi in ["Ad Soyad → TC", "Ad Soyad → GSM"]:
                 adsoyad = form.get("adSoyad", "")
                 try:
                     ad, soyad = adsoyad.strip().split(" ", 1)
                 except ValueError:
-                    flash("Lütfen 'Ad Soyad' formatında giriniz.", "error")
+                    flash("Lütfen 'Ad Soyad' şeklinde girin.", "error")
                     return redirect(request.url)
                 url = f"https://api.hexnox.pro/sowixapi/adsoyadilice.php?ad={ad}&soyad={soyad}"
 
@@ -189,26 +181,21 @@ def sorgu():
                 url = f"https://api.hexnox.pro/sowixapi/gsmdetay.php?gsm={gsm}"
 
             else:
-                flash("Tanımsız sorgu tipi!", "error")
+                flash("Geçersiz sorgu tipi!", "error")
                 return redirect(url_for("index"))
 
             r = requests.get(url)
             sonuc = r.text
 
         except Exception as e:
-            flash(f"Hata oluştu: {str(e)}", "error")
+            flash(f"Hata: {str(e)}", "error")
 
-    # Sorgu sayfası için yeni captcha üret
     session["captcha_code"] = generate_captcha()
     return render_template("sorgu.html", sorgu_tipi=sorgu_tipi, sonuc=sonuc, captcha=session["captcha_code"])
 
-
-# Ücretsiz giriş butonu için özel endpoint
-@app.route('/free-login', methods=['POST'])
+@app.route("/free-login", methods=["POST"])
 def free_login():
-    username = "freeuser"
-    password = USERS[username]["password"]
-    session["username"] = username
+    session["username"] = "freeuser"
     session.permanent = True
     flash("Ücretsiz kullanıcı olarak giriş yapıldı.", "success")
     return redirect(url_for("abonelik"))
