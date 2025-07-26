@@ -3,13 +3,19 @@ import string
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import requests
 from functools import wraps
+from datetime import timedelta
 
 app = Flask(__name__)
 app.secret_key = "neonabi_super_secret_key"
+app.permanent_session_lifetime = timedelta(hours=2)
 
-USERS = {"admin": "123456"}
+# Kullanıcılar: VIP ve Ücretsiz olarak ayırıyoruz
+USERS = {
+    "admin": {"password": "123456", "vip": True},
+    "freeuser": {"password": "1234", "vip": False}
+}
 
-def generate_captcha(length=5):
+def generate_captcha(length=6):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 def login_required(f):
@@ -21,30 +27,63 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def vip_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        username = session.get("username")
+        if not username or not USERS.get(username, {}).get("vip", False):
+            flash("Bu sayfaya erişim için VIP üyelik gereklidir.", "error")
+            return redirect(url_for("abonelik"))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/')
 @login_required
 def index():
+    # Ana VIP sayfa
     return render_template("index.html")
+
+@app.route('/abonelik')
+@login_required
+def abonelik():
+    # Ücretsiz kullanıcılar buraya yönlendirilir
+    return render_template("abonelik.html")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        if username in USERS and USERS[username] == password:
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
+        captcha_input = request.form.get("captcha_input", "").strip().upper()
+
+        # Backend captcha doğrulama
+        if "captcha_code" not in session or captcha_input != session["captcha_code"]:
+            flash("Captcha kodu yanlış!", "error")
+            session["captcha_code"] = generate_captcha()
+            return render_template("login.html", captcha=session["captcha_code"])
+
+        user = USERS.get(username)
+        if user and user["password"] == password:
             session["username"] = username
+            session.permanent = True
             flash("Giriş başarılı!", "success")
-            return redirect(url_for("index"))
+            if user["vip"]:
+                return redirect(url_for("index"))
+            else:
+                return redirect(url_for("abonelik"))
         else:
             flash("Kullanıcı adı veya şifre yanlış!", "error")
-    return render_template("login.html")
+
+    # GET isteği için captcha üret
+    session["captcha_code"] = generate_captcha()
+    return render_template("login.html", captcha=session["captcha_code"])
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == "POST":
-        username = request.form.get("username")
-        password1 = request.form.get("password")
-        password2 = request.form.get("password2")
+        username = request.form.get("username", "").strip()
+        password1 = request.form.get("password", "")
+        password2 = request.form.get("password2", "")
 
         if not username or not password1 or not password2:
             flash("Tüm alanları doldurun!", "error")
@@ -53,7 +92,7 @@ def register():
         elif username in USERS:
             flash("Bu kullanıcı zaten kayıtlı!", "error")
         else:
-            USERS[username] = password1
+            USERS[username] = {"password": password1, "vip": False}  # Yeni kayıt ücretsiz
             flash("Kayıt başarılı! Giriş yapabilirsiniz.", "success")
             return redirect(url_for("login"))
     return render_template("register.html")
@@ -67,15 +106,14 @@ def logout():
 
 @app.route('/sorgu', methods=['GET', 'POST'])
 @login_required
+@vip_required
 def sorgu():
     sorgu_tipi = request.args.get("s", "")
     sonuc = None
-    captcha = generate_captcha()
-    session["captcha_code"] = captcha
 
     if request.method == "POST":
-        user_input = request.form.get("captcha_input", "")
-        if user_input != session.get("captcha_code"):
+        user_input = request.form.get("captcha_input", "").strip().upper()
+        if user_input != session.get("captcha_code", ""):
             flash("Güvenlik kodu yanlış!", "error")
             return redirect(request.url)
 
@@ -84,6 +122,7 @@ def sorgu():
             url = ""
             form = request.form
 
+            # Buraya tüm API sorgularını ekledim, senin verdiğin tüm sorgular:
             if sorgu_tipi in ["Ad Soyad → TC", "Ad Soyad → GSM"]:
                 adsoyad = form.get("adSoyad", "")
                 try:
@@ -159,8 +198,20 @@ def sorgu():
         except Exception as e:
             flash(f"Hata oluştu: {str(e)}", "error")
 
-    return render_template("sorgu.html", sorgu_tipi=sorgu_tipi, sonuc=sonuc, captcha=captcha)
+    # Sorgu sayfası için yeni captcha üret
+    session["captcha_code"] = generate_captcha()
+    return render_template("sorgu.html", sorgu_tipi=sorgu_tipi, sonuc=sonuc, captcha=session["captcha_code"])
+
+
+# Ücretsiz giriş butonu için özel endpoint
+@app.route('/free-login', methods=['POST'])
+def free_login():
+    username = "freeuser"
+    password = USERS[username]["password"]
+    session["username"] = username
+    session.permanent = True
+    flash("Ücretsiz kullanıcı olarak giriş yapıldı.", "success")
+    return redirect(url_for("abonelik"))
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
-
+    app.run(debug=False, host="0.0.0.0", port=5000)
