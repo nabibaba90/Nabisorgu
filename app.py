@@ -1,5 +1,3 @@
-import random
-import string
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import requests
 from functools import wraps
@@ -14,9 +12,6 @@ USERS = {
     "admin": {"password": "123456", "vip": True},
     "freeuser": {"password": "1234", "vip": False}
 }
-
-def generate_captcha(length=6):
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 def login_required(f):
     @wraps(f)
@@ -52,12 +47,6 @@ def login():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "").strip()
-        captcha_input = request.form.get("captcha", "").strip().upper()
-
-        if captcha_input != session.get("captcha_code"):
-            flash("Captcha kodu yanlış!", "error")
-            session["captcha_code"] = generate_captcha()
-            return render_template("login.html", captcha=session["captcha_code"])
 
         user = USERS.get(username)
         if user and user["password"] == password:
@@ -68,8 +57,7 @@ def login():
         else:
             flash("Kullanıcı adı veya şifre hatalı!", "error")
 
-    session["captcha_code"] = generate_captcha()
-    return render_template("login.html", captcha=session["captcha_code"])
+    return render_template("login.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -106,11 +94,6 @@ def sorgu():
     sonuc = None
 
     if request.method == "POST":
-        captcha_input = request.form.get("captcha", "").strip().upper()
-        if captcha_input != session.get("captcha_code"):
-            flash("Güvenlik kodu yanlış!", "error")
-            return redirect(request.url)
-
         try:
             form = request.form
             url = ""
@@ -190,8 +173,7 @@ def sorgu():
         except Exception as e:
             flash(f"Hata: {str(e)}", "error")
 
-    session["captcha_code"] = generate_captcha()
-    return render_template("sorgu.html", sorgu_tipi=sorgu_tipi, sonuc=sonuc, captcha=session["captcha_code"])
+    return render_template("sorgu.html", sorgu_tipi=sorgu_tipi, sonuc=sonuc)
 
 @app.route("/free-login", methods=["POST"])
 def free_login():
