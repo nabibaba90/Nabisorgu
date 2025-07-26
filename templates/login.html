@@ -1,127 +1,195 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>NeoNabi VIP Giriş</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
     <style>
         body {
             margin: 0;
             font-family: 'Orbitron', sans-serif;
-            background: radial-gradient(circle, #111 0%, #000 100%);
-            color: #fff;
-        }
-
-        .container {
+            background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
+            color: #e0f7fa;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
         }
-
-        h1 {
-            font-size: 2.5rem;
-            text-shadow: 0 0 20px #00ffff, 0 0 30px #00ffcc;
-        }
-
-        form {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 30px;
+        .container {
+            background: rgba(0,0,0,0.85);
+            padding: 30px 40px;
             border-radius: 20px;
-            box-shadow: 0 0 25px #0ff;
-            width: 320px;
+            box-shadow: 0 0 40px #00e5ff;
+            width: 350px;
+            text-align: center;
         }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 25px;
+            color: #00e5ff;
+            text-shadow: 0 0 10px #00b8d4;
         }
-
-        button {
-            margin-top: 20px;
-            padding: 10px;
-            width: 100%;
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        input[type="text"],
+        input[type="password"] {
+            padding: 12px 15px;
+            border-radius: 12px;
             border: none;
-            background: #00ffff;
-            color: #000;
-            font-weight: bold;
-            border-radius: 10px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: box-shadow 0.3s;
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            box-shadow: 0 0 10px #00e5ff;
+        }
+        .captcha-display {
+            background: #004d40;
+            color: #00e5ff;
+            font-weight: 900;
+            font-size: 1.6rem;
+            letter-spacing: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            user-select: none;
             cursor: pointer;
-            transition: 0.2s;
+            margin-bottom: 10px;
+            box-shadow: 0 0 20px #00e5ff;
         }
-
+        .captcha-refresh-text {
+            font-size: 0.85rem;
+            color: #80deea;
+            margin-bottom: 12px;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.3s;
+        }
+        .captcha-refresh-text:hover {
+            color: #00bcd4;
+        }
+        button {
+            background: #00e5ff;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 0;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #00343d;
+            cursor: pointer;
+            box-shadow: 0 0 25px #00e5ff;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
         button:hover {
-            background: #00cccc;
+            background: #00bcd4;
+            box-shadow: 0 0 35px #00bcd4;
         }
-
-        a {
-            color: #00ffff;
-            text-decoration: underline;
+        #free-login {
+            margin-top: 15px;
+            background: #ffd600;
+            color: #000;
+            font-weight: 700;
+            box-shadow: 0 0 20px #ffd600;
+        }
+        #free-login:hover {
+            background: #ffc400;
+            box-shadow: 0 0 30px #ffc400;
+        }
+        p, a {
+            color: #80deea;
             font-size: 0.9rem;
         }
-
-        .captcha-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 15px;
+        a:hover {
+            color: #00bcd4;
+            text-decoration: underline;
         }
-
-        .captcha-img {
-            height: 45px;
-            border-radius: 8px;
+        .info-text {
+            margin-top: 14px;
+            font-size: 0.85rem;
+            color: #4dd0e1;
         }
-
-        #free-login {
-            margin-top: 10px;
-            padding: 8px;
-            background: #ff0;
-            color: #000;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
+        @media(max-width: 420px){
+            .container {
+                width: 90vw;
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
         }
     </style>
-    <script>
-        // F12 ve diğer kısayolları engelle
-        document.addEventListener("keydown", function (e) {
-            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
-                e.preventDefault();
-            }
-        });
-
-        // Ücretsiz giriş fonksiyonu
-        function loginAsFreeUser() {
-            document.getElementsByName("username")[0].value = "freeuser";
-            document.getElementsByName("password")[0].value = "1234";
-            document.forms[0].submit();
-        }
-    </script>
 </head>
 <body>
     <div class="container">
-        <h1>NeoNabi Paneli - Giriş</h1>
-        <form method="POST" action="/login">
-            <input type="text" name="username" placeholder="Kullanıcı Adı" required>
-            <input type="password" name="password" placeholder="Şifre" required>
+        <h1>NeoNabi Paneli - VIP Giriş</h1>
+        <form id="loginForm" method="POST" action="/login" onsubmit="return validateCaptcha()">
+            <input type="text" name="username" placeholder="Kullanıcı Adı" required autocomplete="off" />
+            <input type="password" name="password" placeholder="Şifre" required autocomplete="off" />
 
-            <div class="captcha-container">
-                <img src="/captcha" alt="captcha" class="captcha-img">
-                <input type="text" name="captcha" placeholder="Kodu girin" required>
-            </div>
+            <div class="captcha-display" id="captchaCode" title="Captcha koduna tıklayarak yenileyebilirsin" onclick="generateCaptcha()"></div>
+            <div class="captcha-refresh-text" onclick="generateCaptcha()">Kod yenilemek için tıkla ↻</div>
+
+            <input type="text" id="captchaInput" name="captcha_input" placeholder="6 haneli kodu girin" maxlength="6" required autocomplete="off" />
 
             <button type="submit">VIP Giriş</button>
         </form>
 
-        <button id="free-login" onclick="loginAsFreeUser()">Ücretsiz Giriş Yap</button>
+        <button id="free-login">Ücretsiz Giriş Yap</button>
 
         <p>Hesabın yok mu? <a href="/register">Kayıt Ol</a></p>
-        <p style="margin-top:10px;font-size:0.85rem;color:#ccc">Bazı işlemler sadece VIP kullanıcılar içindir.<br> VIP almak için <strong>@Kuruvasanyedim</strong> hesabına ulaş.</p>
+        <p class="info-text">
+            Bazı işlemler sadece VIP kullanıcılar içindir.<br />
+            VIP almak için <strong>@Kuruvasanyedim</strong> hesabına ulaş.
+        </p>
     </div>
+
+    <script>
+        let currentCaptcha = '';
+
+        // Rastgele 6 haneli kod üret
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            currentCaptcha = code;
+            document.getElementById('captchaCode').textContent = code;
+            document.getElementById('captchaInput').value = '';
+        }
+
+        // Form gönderiminde captcha kontrolü
+        function validateCaptcha() {
+            const userInput = document.getElementById('captchaInput').value.trim().toUpperCase();
+            if (userInput !== currentCaptcha) {
+                alert('Captcha kodu yanlış! Lütfen doğru kodu girin.');
+                generateCaptcha();
+                return false; // Formun gönderilmesini engelle
+            }
+            return true;
+        }
+
+        // Ücretsiz giriş butonu fonksiyonu
+        document.getElementById('free-login').addEventListener('click', function(e){
+            e.preventDefault();
+            // Ücretsiz kullanıcının erişebileceği işlemler için yönlendirme
+            // Burada direkt abonelik.html sayfasına gitmesini sağlıyoruz
+            window.location.href = 'abonelik.html';
+        });
+
+        // Sayfa yüklendiğinde captcha oluştur
+        window.onload = generateCaptcha;
+
+        // F12 ve Ctrl+Shift+I engelle (kötü niyetli engellemeyle değilse kaldır)
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C"))) {
+                e.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
